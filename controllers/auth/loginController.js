@@ -41,6 +41,7 @@ exports.loginUser = async (req, res) => {
         freeCashBalance: user.freeCashBalance,
         profilePicture: user.profilePicture,
         address: user.address,
+        isAdmin: user.isAdmin,
       },
     });
   } catch (error) {
