@@ -31,6 +31,7 @@ exports.registerUser = async (req, res) => {
     const newUser = new User({
       name,
       email: normalizedEmail,
+      isAdmin: normalizedEmail === process.env.ADMIN_EMAIL,
       phone,
       authentication: {
         password: hashPassword,
