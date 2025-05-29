@@ -6,12 +6,13 @@ const authenticateToken = require("../middlewares/authenticateToken");
 const {
   addProductsController,
 } = require("../controllers/admin/product-management/addProductsController");
+const upload = require("../middlewares/upload");
 const router = express.Router();
 
 //POST calls
 router.post("/register", registerUser);
 router.post("/login", loginUser);
-router.post("/add-product", authenticateToken, addProductsController);
+router.post("/add-product", authenticateToken, upload.single("file"), addProductsController);
 //GET calls
 router.get("/user-profile", authenticateToken, getProfileDetails);
 //PUT calls
