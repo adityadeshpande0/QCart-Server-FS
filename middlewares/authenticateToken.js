@@ -9,11 +9,10 @@ const authenticateToken = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log("Decoded token:", decoded); // << Add this for debugging
 
     req.user = {
       id: decoded.userId,
-      isAdmin: decoded.isAdmin, // << Must be present
+      isAdmin: decoded.isAdmin,
     };
 
     next();
