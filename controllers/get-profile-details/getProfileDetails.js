@@ -4,7 +4,7 @@ const getProfileDetails = async (req, res) => {
   try {
     const userId = req.user && req.user.id;
     if (!userId) {
-      return res.status(401).json({ message: "Unauthorized" });
+      return res.status(400).json({ message: "Unauthorized" });
     }
     const user = await User.findById(userId).select("-authentication");
     if (!user) {
