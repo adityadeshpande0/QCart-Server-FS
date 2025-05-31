@@ -1,0 +1,22 @@
+module.exports.productCategories = [
+  { label: "Milk Products", value: "milk_products" },
+  { label: "Fresh Fruits", value: "fresh_fruits" },
+  { label: "Fresh Vegetables", value: "fresh_vegetables" },
+  { label: "Biscuits & Cookies", value: "biscuits_cookies" },
+  { label: "Chips & Snacks", value: "chips_snacks" },
+  { label: "Soft Drinks", value: "soft_drinks" },
+  { label: "Juices", value: "juices" },
+  { label: "Instant Foods", value: "instant_foods" },
+  { label: "Bread & Bakery", value: "bread_bakery" },
+  { label: "Cooking Essentials", value: "cooking_essentials" },
+  { label: "Personal Care", value: "personal_care" },
+  { label: "Health & Wellness", value: "health_wellness" },
+  { label: "Baby Care", value: "baby_care" },
+  { label: "Pet Supplies", value: "pet_supplies" },
+  { label: "Frozen Foods", value: "frozen_foods" },
+  { label: "Cleaning Supplies", value: "cleaning_supplies" },
+  { label: "Sanitary Products", value: "sanitary_products" },
+  { label: "Ice Creams", value: "ice_creams" },
+  { label: "Toiletries", value: "toiletries" },
+  { label: "Ready-to-Eat Meals", value: "ready_to_eat" }
+];
