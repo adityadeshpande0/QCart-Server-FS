@@ -11,6 +11,7 @@ const {
 
 const getAllProducts = require("../controllers/admin/product-management/getProductsController");
 const { editProductController, deleteProductController } = require("../controllers/admin/product-management/productManagementController");
+const { addAddress, updateAddress } = require("../controllers/user/updateUserProfile");
 
 
 
@@ -20,6 +21,7 @@ const router = express.Router();
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.post("/add-product", authenticateToken, upload.single("file"), addProductsController);
+router.post("/address", authenticateToken, addAddress);
 
 // GET calls
 router.get("/user-profile", authenticateToken, getProfileDetails);
@@ -27,6 +29,7 @@ router.get("/getAllProducts", authenticateToken, getAllProducts);
 
 // PUT calls
 router.put("/edit-product/:id", authenticateToken, editProductController);
+router.put("/address/:addressId", authenticateToken, updateAddress);
 
 // DELETE calls
 router.delete("/delete-product/:id", authenticateToken, deleteProductController);

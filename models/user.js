@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-//some change
+
 const userSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
@@ -9,17 +9,24 @@ const userSchema = new mongoose.Schema(
     profilePicture: { type: String, required: false },
     isAdmin: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true },
-    address: {
-      street: { type: String, required: false },
-      city: { type: String, required: false },
-      state: { type: String, required: false },
-      zipCode: { type: String, required: false },
-      country: { type: String, required: false },
-      coordinates: {
-        latitude: { type: Number, required: false },
-        longitude: { type: Number, required: false },
+
+    // Multiple addresses
+    addresses: [
+      {
+        street: { type: String, required: false },
+        city: { type: String, required: false },
+        state: { type: String, required: false },
+        zipCode: { type: String, required: false },
+        country: { type: String, required: false },
+        coordinates: {
+          latitude: { type: Number, required: false },
+          longitude: { type: Number, required: false },
+        },
+        label: { type: String, required: false },
+        isDefault: { type: Boolean, default: false },
       },
-    },
+    ],
+
     authentication: {
       password: { type: String, required: true },
       salt: { type: String, required: true },
