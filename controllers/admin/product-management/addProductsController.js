@@ -1,9 +1,10 @@
 const fs = require("fs");
 const ExcelJS = require("exceljs");
 const Product = require("../../../models/Products");
-const { productCategories } = require("..//constants/productCategories");
+const { productCategories } = require("../constants/productCategories");
 
 const validCategories = productCategories.map((c) => c.value);
+const validUnits = ["kg", "liters", "pcs", "meters", "packs"];
 
 const addProductsController = async (req, res) => {
   try {
@@ -21,14 +22,23 @@ const addProductsController = async (req, res) => {
       worksheet.eachRow((row, rowNumber) => {
         if (rowNumber === 1) return;
 
-        const [title, category, price, image, stock] = row.values.slice(1);
-        console.log({ title, category, price, image, stock }); // Debug
-        if (title && category && price && validCategories.includes(category)) {
+        const [title, category, price, image, units, stock, unitValue] = row.values.slice(1);
+
+        if (
+          title &&
+          category &&
+          price &&
+          units &&
+          validCategories.includes(category) &&
+          validUnits.includes(units)
+        ) {
           productsToInsert.push({
             title,
             category,
             price: Number(price),
             image: image || "",
+            units,
+            unitValue: unitValue ? Number(unitValue) : 1,
             stock: Number(stock || 0),
           });
         }
@@ -39,7 +49,7 @@ const addProductsController = async (req, res) => {
       if (productsToInsert.length === 0) {
         return res
           .status(400)
-          .json({ message: "No valid products found or invalid categories." });
+          .json({ message: "No valid products found or invalid categories/units." });
       }
 
       const inserted = await Product.insertMany(productsToInsert);
@@ -48,27 +58,33 @@ const addProductsController = async (req, res) => {
         .json({ message: "Products added successfully.", products: inserted });
     }
 
-    if (!req.body || typeof req.body !== "object") {
-      return res
-        .status(400)
-        .json({ message: "Invalid request body or missing data." });
-    }
+    const { title, category, price, image, stock, units, unitValue } = req.body;
 
-    const { title, category, price, image, stock } = req.body;
-
-    if (!title || !category || !price) {
-      return res
-        .status(400)
-        .json({ message: "Title, category, and price are required." });
+    if (!title || !category || !price || !units) {
+      return res.status(400).json({
+        message: "Title, category, price, and units are required.",
+      });
     }
 
     if (!validCategories.includes(category)) {
       return res.status(400).json({ message: `Invalid category: ${category}` });
     }
 
-    const product = new Product({ title, category, price, image, stock });
-    const saved = await product.save();
+    if (!validUnits.includes(units)) {
+      return res.status(400).json({ message: `Invalid units: ${units}` });
+    }
 
+    const product = new Product({
+      title,
+      category,
+      price,
+      image,
+      stock: Number(stock || 0),
+      units,
+      unitValue: unitValue ? Number(unitValue) : 1,
+    });
+
+    const saved = await product.save();
     res.status(201).json(saved);
   } catch (err) {
     console.error("Add Product Error:", err);

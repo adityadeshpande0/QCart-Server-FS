@@ -6,7 +6,12 @@ const productSchema = new mongoose.Schema(
     category: { type: String, required: true },
     price: { type: Number, required: true },
     image: { type: String },
-    stock: { type: Number, required: true, default: 0 },
+    // E.g., 'kg', 'liters', 'pcs'
+    units: { type: String, required: true, enum: ['kg', 'liters', 'pcs', 'meters', 'packs'] },
+    // Quantity per unit (optional, useful for bulk or sub-unit handling)
+    unitValue: { type: Number, default: 1 }, // e.g., 1 kg, 1 liter, 1 piece
+    // Stock will represent the total available in units
+    stock: { type: Number, required: true, default: 0 }, // E.g., 50 kg or 100 pcs
   },
   { timestamps: true }
 );
