@@ -19,6 +19,11 @@ const {
   updateAddress,
   getAddresses,
 } = require("../controllers/user/updateUserProfile");
+const {
+  placeOrder,
+  getAllOrders,
+  cancelOrder,
+} = require("../controllers/user-orders-management/ordersManagementController");
 
 const router = express.Router();
 
@@ -32,15 +37,17 @@ router.post(
   addProductsController
 );
 router.post("/addaddress", authenticateToken, addAddress);
+router.post("/place-order", authenticateToken, placeOrder);
 
 // GET calls
 router.get("/user-profile", authenticateToken, getProfileDetails);
 router.get("/getAllProducts", authenticateToken, getAllProducts);
 router.get("/getallAddresses", authenticateToken, getAddresses);
-
+router.get("/get-recent-orders", authenticateToken, getAllOrders);
 // PUT calls
 router.put("/edit-product/:id", authenticateToken, editProductController);
 router.put("/address/:addressId", authenticateToken, updateAddress);
+router.put("/cancel-order/:orderId", authenticateToken, cancelOrder);
 
 // DELETE calls
 router.delete(
