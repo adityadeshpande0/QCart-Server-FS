@@ -1,8 +1,8 @@
-const User = require("..//..//models/User"); 
+const User = require("..//..//models/User");
 
 // Add a new address
 exports.addAddress = async (req, res) => {
-  const userId = req.user._id;
+  const userId = req.user.id;
   const newAddress = req.body;
 
   try {
@@ -16,21 +16,18 @@ exports.addAddress = async (req, res) => {
     user.addresses.push(newAddress);
     await user.save();
 
-    res
-      .status(200)
-      .json({
-        message: "Address added successfully",
-        addresses: user.addresses,
-      });
+    res.status(200).json({
+      message: "Address added successfully",
+      addresses: user.addresses,
+    });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Failed to add address", error: err.message });
+    res.status(500).json({ message: "Failed to add address", error: err.message });
   }
 };
 
+// Update an address
 exports.updateAddress = async (req, res) => {
-  const userId = req.user._id;
+  const userId = req.user.id;
   const { addressId } = req.params;
   const updatedAddress = req.body;
 
@@ -56,15 +53,27 @@ exports.updateAddress = async (req, res) => {
 
     await user.save();
 
-    res
-      .status(200)
-      .json({
-        message: "Address updated successfully",
-        addresses: user.addresses,
-      });
+    res.status(200).json({
+      message: "Address updated successfully",
+      addresses: user.addresses,
+    });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Failed to update address", error: err.message });
+    res.status(500).json({ message: "Failed to update address", error: err.message });
+  }
+};
+
+exports.getAddresses = async (req, res) => {
+  const userId = req.user.id;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.status(200).json({
+      message: "Addresses retrieved successfully",
+      addresses: user.addresses,
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to get addresses", error: err.message });
   }
 };
