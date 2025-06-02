@@ -54,7 +54,13 @@ exports.placeOrder = async (req, res) => {
     const order = new Order({
       userId,
       products: orderItems,
-      address,
+      address: {
+        street: address.street || "",
+        city: address.city || "",
+        state: address.state || "",
+        zipCode: address.zipCode || "",
+        country: address.country || "",
+      },
       totalAmount,
     });
 
@@ -63,7 +69,7 @@ exports.placeOrder = async (req, res) => {
       order,
       message: "New order placed",
     });
-    
+
     res.status(201).json({
       message: "Order placed successfully",
       order,

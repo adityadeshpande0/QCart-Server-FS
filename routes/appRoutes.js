@@ -24,6 +24,9 @@ const {
   getAllOrders,
   cancelOrder,
 } = require("../controllers/user-orders-management/ordersManagementController");
+const {
+  getAllActiveOrders,
+} = require("../controllers/admin/order-management/manageOrdersControllers");
 
 const router = express.Router();
 
@@ -41,9 +44,10 @@ router.post("/place-order", authenticateToken, placeOrder);
 
 // GET calls
 router.get("/user-profile", authenticateToken, getProfileDetails);
-router.get("/getAllProducts", authenticateToken, getAllProducts);
+router.get("/getAllProducts", getAllProducts);
 router.get("/getallAddresses", authenticateToken, getAddresses);
 router.get("/get-recent-orders", authenticateToken, getAllOrders);
+router.get("/get-orders", authenticateToken, getAllActiveOrders);
 // PUT calls
 router.put("/edit-product/:id", authenticateToken, editProductController);
 router.put("/address/:addressId", authenticateToken, updateAddress);
