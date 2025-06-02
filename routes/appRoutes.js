@@ -18,6 +18,7 @@ const {
   addAddress,
   updateAddress,
   getAddresses,
+  deleteAddress,
 } = require("../controllers/user/updateUserProfile");
 const {
   placeOrder,
@@ -59,5 +60,6 @@ router.delete(
   authenticateToken,
   deleteProductController
 );
+router.delete("/delete-address/:addressId", authenticateToken, deleteAddress);
 
 module.exports = router;
