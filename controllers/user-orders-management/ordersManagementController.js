@@ -2,21 +2,18 @@ const Order = require("..//..//models/Orders");
 const Product = require("..//../models/Products");
 const User = require("..//../models/User");
 
-// Place a new order
 exports.placeOrder = async (req, res) => {
   try {
     const { products, address } = req.body;
-    const userId = req.user.id; // Assuming middleware populates req.user
+    const userId = req.user.id;
 
     if (!products || !Array.isArray(products) || products.length === 0) {
       return res.status(400).json({ message: "No products provided" });
     }
 
-    // Fetch products from DB
     const productIds = products.map((p) => p.productId);
     const dbProducts = await Product.find({ _id: { $in: productIds } });
 
-    // Validate stock & prepare order items with price and subtotal
     const orderItems = [];
 
     for (const item of products) {
@@ -43,25 +40,22 @@ exports.placeOrder = async (req, res) => {
       });
     }
 
-    // Deduct stock
     for (const item of orderItems) {
       await Product.findByIdAndUpdate(item.productId, {
         $inc: { stock: -item.quantity },
       });
     }
 
-    // Calculate total amount
     const totalAmount = orderItems.reduce(
       (sum, item) => sum + item.subtotal,
       0
     );
 
-    // Create and save order
     const order = new Order({
       userId,
       products: orderItems,
       address,
-      totalAmount, // Make sure your Order schema has this field
+      totalAmount,
     });
 
     await order.save();
@@ -113,14 +107,12 @@ exports.cancelOrder = async (req, res) => {
       return res.status(400).json({ message: "Delivered order cannot be cancelled" });
     }
 
-    // Restore product stock
     for (const item of order.products) {
       await Product.findByIdAndUpdate(item.productId, {
         $inc: { stock: item.quantity },
       });
     }
 
-    // Update order status
     order.status = "Cancelled";
     await order.save();
 

@@ -1,12 +1,40 @@
 require("dotenv").config();
 const express = require("express");
+const http = require("http");
 const cors = require("cors");
+const { Server } = require("socket.io");
 const cookieParser = require("cookie-parser");
 const dbconnect = require("./connections/db");
 const appRoutes = require("./routes/appRoutes");
+
 const app = express();
+const server = http.createServer(app); 
 const PORT = process.env.PORT;
 
+const io = new Server(server, {
+  cors: {
+    origin: [process.env.CORS_ORIGIN, "http://localhost:5173"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  },
+});
+
+io.on("connection", (socket) => {
+  console.log("Client connected:", socket.id);
+
+  socket.on("place-order", (data) => {
+    console.log("Order placed:", data);
+    io.emit("order-updated", { message: "Order received", order: data });
+  });
+
+  socket.on("disconnect", () => {
+    console.log("Client disconnected:", socket.id);
+  });
+});
+
+app.set("io", io);
+
+// CORS config
 const corsConfigurations = {
   origin: [process.env.CORS_ORIGIN, "http://localhost:5173"],
   methods: ["GET", "POST", "PUT", "DELETE"],
@@ -23,11 +51,12 @@ const corsConfigurations = {
     app.use(cors(corsConfigurations));
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
+    app.use(cookieParser());
 
     await dbconnect();
-    app.use(cookieParser());
     app.use("/api/auth", appRoutes);
-    app.listen(PORT, () => {
+
+    server.listen(PORT, () => {
       spinner.succeed(`Server running on port ${PORT}`);
     });
   } catch (error) {
