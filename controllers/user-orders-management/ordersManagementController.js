@@ -6,7 +6,7 @@ exports.placeOrder = async (req, res) => {
   try {
     const { products, address } = req.body;
     const userId = req.user.id;
-
+    const io = req.app.get("io");
     if (!products || !Array.isArray(products) || products.length === 0) {
       return res.status(400).json({ message: "No products provided" });
     }
@@ -59,7 +59,11 @@ exports.placeOrder = async (req, res) => {
     });
 
     await order.save();
-
+    io.to("admins").emit("new-order", {
+      order,
+      message: "New order placed",
+    });
+    
     res.status(201).json({
       message: "Order placed successfully",
       order,
@@ -104,7 +108,9 @@ exports.cancelOrder = async (req, res) => {
     }
 
     if (order.status === "Delivered") {
-      return res.status(400).json({ message: "Delivered order cannot be cancelled" });
+      return res
+        .status(400)
+        .json({ message: "Delivered order cannot be cancelled" });
     }
 
     for (const item of order.products) {

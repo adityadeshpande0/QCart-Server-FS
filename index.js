@@ -8,7 +8,7 @@ const dbconnect = require("./connections/db");
 const appRoutes = require("./routes/appRoutes");
 
 const app = express();
-const server = http.createServer(app); 
+const server = http.createServer(app);
 const PORT = process.env.PORT;
 
 const io = new Server(server, {
@@ -22,9 +22,10 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   console.log("Client connected:", socket.id);
 
-  socket.on("place-order", (data) => {
-    console.log("Order placed:", data);
-    io.emit("order-updated", { message: "Order received", order: data });
+  // 🔄 Let admin join a room so only they get the event
+  socket.on("join-admin", () => {
+    socket.join("admins");
+    console.log(`Socket ${socket.id} joined 'admins' room`);
   });
 
   socket.on("disconnect", () => {
