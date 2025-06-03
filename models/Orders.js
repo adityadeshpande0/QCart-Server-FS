@@ -28,6 +28,8 @@ const orderSchema = new mongoose.Schema(
       enum: ["Placed", "Dispatched", "Delivered", "Cancelled"],
       default: "Placed",
     },
+    dispatchedAt: Date,
+    deliveredAt: Date,
     totalAmount: { type: Number, required: true },
   },
   { timestamps: true }

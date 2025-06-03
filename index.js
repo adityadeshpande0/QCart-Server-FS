@@ -22,12 +22,16 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   console.log("Client connected:", socket.id);
 
-  // 🔄 Let admin join a room so only they get the event
   socket.on("join-admin", () => {
     socket.join("admins");
     console.log(`Socket ${socket.id} joined 'admins' room`);
   });
-
+  socket.on("join-user", (userId) => {
+    if (userId) {
+      socket.join(userId);
+      console.log(`User ${userId} joined their room`);
+    }
+  });
   socket.on("disconnect", () => {
     console.log("Client disconnected:", socket.id);
   });

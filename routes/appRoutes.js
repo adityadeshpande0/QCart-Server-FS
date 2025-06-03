@@ -27,6 +27,7 @@ const {
 } = require("../controllers/user-orders-management/ordersManagementController");
 const {
   getAllActiveOrders,
+  updateOrderStatus,
 } = require("../controllers/admin/order-management/manageOrdersControllers");
 
 const router = express.Router();
@@ -53,6 +54,7 @@ router.get("/get-orders", authenticateToken, getAllActiveOrders);
 router.put("/edit-product/:id", authenticateToken, editProductController);
 router.put("/address/:addressId", authenticateToken, updateAddress);
 router.put("/cancel-order/:orderId", authenticateToken, cancelOrder);
+router.put("/orders/:orderId/status", authenticateToken, updateOrderStatus);
 
 // DELETE calls
 router.delete(
