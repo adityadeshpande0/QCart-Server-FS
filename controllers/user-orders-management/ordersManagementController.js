@@ -7,8 +7,24 @@ exports.placeOrder = async (req, res) => {
     const { products, address } = req.body;
     const userId = req.user.id;
     const io = req.app.get("io");
+
     if (!products || !Array.isArray(products) || products.length === 0) {
       return res.status(400).json({ message: "No products provided" });
+    }
+
+    if (
+      !address ||
+      typeof address !== "object" ||
+      !address.street ||
+      !address.city ||
+      !address.state ||
+      !address.zipCode ||
+      !address.country
+    ) {
+      return res.status(402).json({
+        message:
+          "Address is required and must include street, city, state, zipCode, and country",
+      });
     }
 
     const productIds = products.map((p) => p.productId);
@@ -54,13 +70,7 @@ exports.placeOrder = async (req, res) => {
     const order = new Order({
       userId,
       products: orderItems,
-      address: {
-        street: address.street || "",
-        city: address.city || "",
-        state: address.state || "",
-        zipCode: address.zipCode || "",
-        country: address.country || "",
-      },
+      address,
       totalAmount,
     });
 
